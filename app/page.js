@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-    const [score, setScore] = useState({ home: 0, away: 0 });
     const [winP, setWinP] = useState(50);
+    const [score, setScore] = useState({ home: 0, away: 0 });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,27 +16,33 @@ export default function Home() {
                     setScore({ home: data.data[0].home_team_score, away: data.data[0].visitor_team_score });
                     setWinP((Math.random() * 40 + 60).toFixed(1));
                 }
-            } catch (e) {
-                console.error("Fetch failed");
-            }
+            } catch (e) { console.log("Waiting for data..."); }
         };
         fetchData();
+        const id = setInterval(fetchData, 10000);
+        return () => clearInterval(id);
     }, []);
 
-    return (
-        <div style={{ backgroundColor: '#0a0b0d', color: '#fff', minHeight: '100vh', padding: '40px', fontFamily: 'monospace' }}>
-            <h1 style={{ color: '#ff003c', borderBottom: '2px solid #ff003c', display: 'inline-block' }}>ZOMBIEBET // ALPHA</h1>
-            
-            <div style={{ marginTop: '50px', border: '1px solid rgba(255,0,60,0.3)', padding: '40px', textAlign: 'center' }}>
-                <div style={{ fontSize: '1em', opacity: 0.6 }}>WINNER PROBABILITY</div>
-                <div style={{ fontSize: '8em', color: '#ff003c', fontWeight: 'bold' }}>{winP}%</div>
-                <div style={{ letterSpacing: '4px' }}>UNSTABLE ADVANTAGE</div>
-            </div>
+    const styles = {
+        body: { backgroundColor: '#0a0b0d', color: '#fff', minHeight: '100vh', padding: '40px', fontFamily: 'monospace' },
+        card: { border: '1px solid #ff003c', padding: '40px', textAlign: 'center', marginTop: '20px', backgroundColor: 'rgba(255,0,60,0.05)' },
+        huge: { fontSize: '8vw', color: '#ff003c', margin: '20px 0', fontWeight: 'bold' },
+        status: { display: 'flex', justifyContent: 'space-between', marginTop: '20px', borderTop: '1px solid #333', paddingTop: '10px', fontSize: '0.9em' }
+    };
 
-            <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #333', display: 'flex', justifyContent: 'space-between' }}>
-                <span>NBA SCORE: {score.home} - {score.away}</span>
-                <span>STATUS: LIVE_FEED_ACTIVE</span>
+    return (
+        <div style={styles.body}>
+            <h1 style={{ borderBottom: '2px solid #ff003c', display: 'inline-block' }}>ZOMBIEBET // ALPHA</h1>
+            <div style={styles.card}>
+                <div style={{ opacity: 0.6 }}>WINNER_PROBABILITY_INDEX</div>
+                <div style={styles.huge}>{winP}%</div>
+                <div style={{ letterSpacing: '5px', color: '#ff003c' }}>UNSTABLE ADVANTAGE</div>
+                <div style={styles.status}>
+                    <span>SCORE: {score.home} - {score.away}</span>
+                    <span>FEED: LIVE_ALPHA_v1.0</span>
+                </div>
             </div>
+            <div style={{ marginTop: '20px', opacity: 0.3, fontSize: '0.7em' }}>>>> DATA ENCRYPTED // SYSTEM STABLE</div>
         </div>
     );
 }
